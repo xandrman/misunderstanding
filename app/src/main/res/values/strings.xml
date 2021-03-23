@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Misunderstanding</string>
+    <string name="title">Title</string>
+    <string name="title_hint">Enter a title of event</string>
+    <string name="details">Details</string>
+    <string name="solved">Solved</string>
 </resources>
