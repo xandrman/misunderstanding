@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,7 +30,7 @@ public class EventListFragment extends Fragment {
         return recyclerView;
     }
 
-    private class EventHolder extends RecyclerView.ViewHolder {
+    private class EventHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView tvTitle;
         private TextView tvDate;
@@ -39,12 +40,18 @@ public class EventListFragment extends Fragment {
             super(inflater.inflate(R.layout.event_list_item, parent, false));
             tvTitle = itemView.findViewById(R.id.tv_title);
             tvDate = itemView.findViewById(R.id.tv_date);
+            itemView.setOnClickListener(this);
         }
 
         public void bind(Event event) {
             this.event = event;
             tvTitle.setText(event.getTitle());
             tvDate.setText(event.getDate().toString());
+        }
+
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(getActivity(), event.getTitle() + " clicked!", Toast.LENGTH_SHORT).show();
         }
     }
 
