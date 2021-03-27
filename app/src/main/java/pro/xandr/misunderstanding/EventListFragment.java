@@ -1,5 +1,6 @@
 package pro.xandr.misunderstanding;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,7 +56,8 @@ public class EventListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(getActivity(), event.getTitle() + " clicked!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getActivity(), EventActivity.class);
+            startActivity(intent);
         }
     }
 
