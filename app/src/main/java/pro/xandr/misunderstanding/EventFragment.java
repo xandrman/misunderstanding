@@ -12,17 +12,22 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class EventFragment extends Fragment {
 
     private static final String ARG_EVENT_ID = "event_id";
+    private static final String DIALOG_DATE = "DialogDate";
+    private static final int REQUEST_DATE = 0;
 
     private Event event;
     private EditText etTitle;
@@ -70,18 +75,23 @@ public class EventFragment extends Fragment {
             }
         });
 
-        btnDate = (Button) v.findViewById(R.id.btn_date);
-        btnDate.setText(event.getDate().toString());
-        btnDate.setEnabled(false);
-
-        chbSolved = (CheckBox) v.findViewById(R.id.chb_solved);
-        chbSolved.setChecked(event.isSolved());
-        chbSolved.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        btnDate = v.findViewById(R.id.btn_date);
+        updateDate();
+        btnDate.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                event.setSolved(isChecked);
+            public void onClick(View v) {
+                FragmentManager manager = getFragmentManager();
+                DatePickerFragment fragment = DatePickerFragment.newInstance(event.getDate());
+                fragment.setTargetFragment(EventFragment.this, REQUEST_DATE);
+                if (manager != null) {
+                    fragment.show(manager, DIALOG_DATE);
+                }
             }
         });
+
+        chbSolved = v.findViewById(R.id.chb_solved);
+        chbSolved.setChecked(event.isSolved());
+        chbSolved.setOnCheckedChangeListener((buttonView, isChecked) -> event.setSolved(isChecked));
 
         return v;
     }
@@ -96,5 +106,22 @@ public class EventFragment extends Fragment {
         Intent data = new Intent();
         data.putExtra("s", event.getUuid());
         getActivity().setResult(Activity.RESULT_OK, data);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_DATE) {
+            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+            event.setDate(date);
+            updateDate();
+        }
+    }
+
+    private void updateDate() {
+        btnDate.setText(event.getDate().toString());
     }
 }
