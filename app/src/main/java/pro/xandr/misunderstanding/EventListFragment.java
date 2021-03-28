@@ -106,7 +106,6 @@ public class EventListFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_EVENT) {
-            Log.d("TAG", data.toString());
 //            eventAdapter.notifyItemChanged();
         }
     }
