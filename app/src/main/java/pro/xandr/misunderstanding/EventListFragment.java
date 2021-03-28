@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,8 +26,17 @@ public class EventListFragment extends Fragment {
 
     private static final int REQUEST_EVENT = 1;
 
+    private static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
+
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
+    private boolean subtitleVisible;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Nullable
     @Override
@@ -31,6 +44,11 @@ public class EventListFragment extends Fragment {
         View v = inflater.inflate(R.layout.event_list_fragment, container, false);
         recyclerView = v.findViewById(R.id.rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        if (savedInstanceState != null) {
+            subtitleVisible = savedInstanceState.getBoolean(SAVED_SUBTITLE_VISIBLE);
+        }
+
         updateUI();
         return recyclerView;
     }
@@ -100,6 +118,8 @@ public class EventListFragment extends Fragment {
         } else {
             eventAdapter.notifyDataSetChanged();
         }
+
+        updateSubtitle();
     }
 
     @Override
@@ -107,5 +127,56 @@ public class EventListFragment extends Fragment {
         if (requestCode == REQUEST_EVENT) {
 //            eventAdapter.notifyItemChanged();
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_event_list, menu);
+
+        MenuItem subtitleItem = menu.findItem(R.id.show_subtitle);
+        if (subtitleVisible) {
+            subtitleItem.setTitle(R.string.hide_subtitle);
+        } else {
+            subtitleItem.setTitle(R.string.show_subtitle);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.new_event:
+                Event event = new Event();
+                EventLab.get(getActivity()).addEvent(event);
+                Intent intent = EventPagerActivity.newIntent(getActivity(), event.getUuid());
+                startActivity(intent);
+                return true;
+            case R.id.show_subtitle:
+                subtitleVisible = !subtitleVisible;
+                getActivity().invalidateOptionsMenu();
+                updateSubtitle();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void updateSubtitle() {
+        EventLab eventLab = EventLab.get(getActivity());
+        int eventCount = eventLab.getEventList().size();
+        String subtitle = getString(R.string.subtitle_format, eventCount);
+
+        if (!subtitleVisible) {
+            subtitle = null;
+        }
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.getSupportActionBar().setSubtitle(subtitle);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SAVED_SUBTITLE_VISIBLE, subtitleVisible);
     }
 }

@@ -15,7 +15,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EventPagerActivity"/>
+        <activity android:name=".EventPagerActivity"
+            android:parentActivityName=".EventListActivity"/>
     </application>
 
 </manifest>

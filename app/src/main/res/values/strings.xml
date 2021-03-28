@@ -5,4 +5,8 @@
     <string name="details">Details</string>
     <string name="solved">Solved</string>
     <string name="date_of_event">Date of event</string>
+    <string name="add_event">Add event</string>
+    <string name="show_subtitle">Show subtitle</string>
+    <string name="hide_subtitle">Hide subtitle</string>
+    <string name="subtitle_format">%1$d events</string>
 </resources>

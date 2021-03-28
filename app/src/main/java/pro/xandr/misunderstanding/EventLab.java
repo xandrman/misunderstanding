@@ -40,4 +40,8 @@ public class EventLab {
         }
         return null;
     }
+
+    public void addEvent(Event event) {
+        eventList.add(event);
+    }
 }
