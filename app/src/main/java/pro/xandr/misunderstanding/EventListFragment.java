@@ -2,6 +2,7 @@ package pro.xandr.misunderstanding;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class EventListFragment extends Fragment {
+
+    private static final int REQUEST_EVENT = 1;
 
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
@@ -56,8 +59,8 @@ public class EventListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(getActivity(), EventActivity.class);
-            startActivity(intent);
+            Intent intent = EventActivity.newIntent(getActivity(), event.getUuid());
+            startActivityForResult(intent, REQUEST_EVENT);
         }
     }
 
@@ -91,7 +94,20 @@ public class EventListFragment extends Fragment {
     private void updateUI() {
         EventLab eventLab = EventLab.get(getActivity());
         List<Event> eventList = eventLab.getEventList();
-        eventAdapter = new EventAdapter(eventList);
-        recyclerView.setAdapter(eventAdapter);
+        if (eventAdapter == null) {
+            eventAdapter = new EventAdapter(eventList);
+            recyclerView.setAdapter(eventAdapter);
+        } else {
+            eventAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_EVENT) {
+            Log.d("TAG", data.toString());
+//            eventAdapter.notifyItemChanged();
+        }
     }
 }

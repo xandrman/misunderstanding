@@ -34,7 +34,7 @@ public class EventLab {
 
     public Event getEvent(UUID uuid) {
         for (Event event : eventList) {
-            if (event.getUuid() == uuid) {
+            if (event.getUuid().equals(uuid)) {
                 return event;
             }
         }
