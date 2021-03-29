@@ -11,7 +11,11 @@ public class Event {
     private boolean solved;
 
     public Event() {
-        uuid = UUID.randomUUID();
+        this(UUID.randomUUID());
+    }
+
+    public Event(UUID uuid) {
+        this.uuid = uuid;
         date = new Date();
     }
 

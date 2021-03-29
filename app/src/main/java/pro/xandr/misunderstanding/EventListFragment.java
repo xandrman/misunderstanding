@@ -53,6 +53,12 @@ public class EventListFragment extends Fragment {
         return recyclerView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
     private class EventHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView tvTitle;
@@ -107,6 +113,10 @@ public class EventListFragment extends Fragment {
         public int getItemCount() {
             return eventList.size();
         }
+
+        public void setEventList(List<Event> eventList) {
+            this.eventList = eventList;
+        }
     }
 
     private void updateUI() {
@@ -116,6 +126,7 @@ public class EventListFragment extends Fragment {
             eventAdapter = new EventAdapter(eventList);
             recyclerView.setAdapter(eventAdapter);
         } else {
+            eventAdapter.setEventList(eventList);
             eventAdapter.notifyDataSetChanged();
         }
 
