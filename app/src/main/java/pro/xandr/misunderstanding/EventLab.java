@@ -30,7 +30,7 @@ public class EventLab {
     }
 
     private EventLab(Context context) {
-        this.context = context;
+        this.context = context.getApplicationContext();
         sqLiteDatabase = new EventBaseHelper(context).getWritableDatabase();
     }
 
